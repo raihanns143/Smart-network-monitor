@@ -95,6 +95,22 @@ html, body {
 }
 .sidebar.collapsed ~ .main-wrapper { margin-left: var(--sidebar-w-col); }
 
+/* ── Sidebar Backdrop (Mobile) ──────────────────────────────── */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1040;
+  display: none;
+  opacity: 0;
+  transition: opacity var(--transition);
+  backdrop-filter: blur(4px);
+}
+.sidebar-backdrop.show {
+  display: block;
+  opacity: 1;
+}
+
 /* ── Sidebar Brand ──────────────────────────────────────────── */
 .sidebar-brand {
   display: flex;
@@ -534,11 +550,26 @@ code              { background: rgba(255,255,255,0.08); padding: 2px 6px; border
 ══════════════════════════════════════════════════════════════ */
 @media (max-width: 576px) {
 
-  /* ── Hide left sidebar completely on mobile ── */
-  .sidebar,
-  #sidebarToggle {
-    display: none !important;
+  /* ── Hide left sidebar initially on mobile ── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px !important;
+    height: 100vh;
+    transform: translateX(-100%);
+    z-index: 1050;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* ── Show text/icons inside mobile sidebar ── */
+  .sidebar .brand-text,
+  .sidebar .sidebar-link span:not(.badge),
+  .sidebar .user-info { display: block !important; }
+  .sidebar .sidebar-link { justify-content: flex-start !important; padding: 0.8rem 1rem !important; }
+  .sidebar .user-avatar { margin: 0 !important; }
 
   /* ── Main content takes full width ── */
   .main-wrapper {

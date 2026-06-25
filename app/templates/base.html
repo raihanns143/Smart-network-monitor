@@ -23,6 +23,9 @@
 <body>
 
 {% if current_user.is_authenticated %}
+<!-- Sidebar Backdrop for Mobile -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar" id="sidebar">
   <!-- Brand -->
@@ -197,9 +200,27 @@
 // ── Sidebar toggle ────────────────────────────────────────────────────────────
 const sidebar = document.getElementById("sidebar");
 const toggleBtn = document.getElementById("sidebarToggle");
+const backdrop = document.getElementById("sidebarBackdrop");
+
 if (toggleBtn) {
   toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
+    if (window.innerWidth <= 576) {
+      sidebar.classList.toggle("mobile-open");
+      if (sidebar.classList.contains("mobile-open")) {
+        backdrop.classList.add("show");
+      } else {
+        backdrop.classList.remove("show");
+      }
+    } else {
+      sidebar.classList.toggle("collapsed");
+    }
+  });
+}
+
+if (backdrop) {
+  backdrop.addEventListener("click", () => {
+    sidebar.classList.remove("mobile-open");
+    backdrop.classList.remove("show");
   });
 }
 
