@@ -535,7 +535,8 @@ code              { background: rgba(255,255,255,0.08); padding: 2px 6px; border
 @media (max-width: 576px) {
 
   /* ── Hide left sidebar completely on mobile ── */
-  .sidebar {
+  .sidebar,
+  #sidebarToggle {
     display: none !important;
   }
 
