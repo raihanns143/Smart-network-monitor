@@ -151,6 +151,43 @@
   {% block auth_content %}{% endblock %}
 {% endif %}
 
+{% if current_user.is_authenticated %}
+<!-- ═══════════════ MOBILE BOTTOM NAV ═══════════════ -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <a href="{{ url_for('dashboard.index') }}"
+     class="mobile-nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+    <i class="bi bi-speedometer2"></i>
+    <span>Dashboard</span>
+  </a>
+
+  <a href="{{ url_for('devices.list_devices') }}"
+     class="mobile-nav-item {% if request.blueprint == 'devices' %}active{% endif %}">
+    <i class="bi bi-hdd-network"></i>
+    <span>Devices</span>
+  </a>
+
+  <!-- Scan FAB (center) -->
+  <form action="{{ url_for('monitor.trigger_scan') }}" method="POST" style="display:contents">
+    <button type="submit" class="mobile-nav-item mobile-nav-fab">
+      <i class="bi bi-radar"></i>
+    </button>
+  </form>
+
+  <a href="{{ url_for('alerts.index') }}"
+     class="mobile-nav-item {% if request.blueprint == 'alerts' %}active{% endif %}">
+    <i class="bi bi-bell"></i>
+    <span>Alerts</span>
+    <span class="mobile-badge" id="mobile-alert-badge"></span>
+  </a>
+
+  <a href="{{ url_for('reports.index') }}"
+     class="mobile-nav-item {% if request.blueprint == 'reports' %}active{% endif %}">
+    <i class="bi bi-file-bar-graph"></i>
+    <span>Reports</span>
+  </a>
+</nav>
+{% endif %}
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Chart.js -->
