@@ -67,8 +67,11 @@ def create_app(config_name: str | None = None) -> Flask:
 
     # ── Create DB tables + seed default admin ─────────────────────────────────
     with app.app_context():
-        db.create_all()
-        _seed_default_admin(app)
+        try:
+            db.create_all()
+            _seed_default_admin(app)
+        except Exception as e:
+            print(f"Error initializing database: {e}")
 
     return app
 
