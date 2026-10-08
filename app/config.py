@@ -29,11 +29,18 @@ class Config:
     DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
     DB_NAME     = os.environ.get("DB_NAME",     "smart_network_monitor")
 
-    # If DATABASE_URL is set, use it (perfect for SQLite on free hosting).
-    # Otherwise, fall back to the MySQL connection string.
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+    # Use DATABASE_URL if set (e.g. a hosted MySQL/Postgres URL).
+    # Fall back to SQLite for zero-config environments like Vercel.
+    _mysql_url = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+    _sqlite_url = "sqlite:////tmp/smart_network_monitor.db"
+    _has_mysql_config = any([
+        os.environ.get("DB_HOST"),
+        os.environ.get("DB_USER"),
+        os.environ.get("DATABASE_URL"),
+    ])
+    SQLALCHEMY_DATABASE_URI = (
+        os.environ.get("DATABASE_URL")
+        or (_mysql_url if _has_mysql_config else _sqlite_url)
     )
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
