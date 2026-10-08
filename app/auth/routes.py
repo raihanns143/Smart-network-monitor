@@ -24,17 +24,20 @@ def login():
         password   = request.form.get("password", "")
         remember   = bool(request.form.get("remember"))
 
-        user = User.query.filter_by(username=username).first()
+        try:
+            user = User.query.filter_by(username=username).first()
 
-        if user and user.is_active and user.check_password(password):
-            login_user(user, remember=remember)
-            user.last_login = datetime.utcnow()
-            db.session.commit()
-            flash(f"Welcome back, {user.username}!", "success")
-            next_page = request.args.get("next")
-            return redirect(next_page or url_for("dashboard.index"))
+            if user and user.is_active and user.check_password(password):
+                login_user(user, remember=remember)
+                user.last_login = datetime.utcnow()
+                db.session.commit()
+                flash(f"Welcome back, {user.username}!", "success")
+                next_page = request.args.get("next")
+                return redirect(next_page or url_for("dashboard.index"))
 
-        flash("Invalid username or password.", "danger")
+            flash("Invalid username or password.", "danger")
+        except Exception as e:
+            flash(f"Database Error: {str(e)}", "danger")
 
     return render_template("auth/login.html", title="Login")
 
