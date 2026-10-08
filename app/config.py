@@ -33,15 +33,20 @@ class Config:
     # Fall back to SQLite for zero-config environments like Vercel.
     _mysql_url = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
     _sqlite_url = "sqlite:////tmp/smart_network_monitor.db"
+    
     _has_mysql_config = any([
-        os.environ.get("DB_HOST"),
-        os.environ.get("DB_USER"),
+        os.environ.get("DB_HOST") and os.environ.get("DB_HOST") != "localhost",
         os.environ.get("DATABASE_URL"),
     ])
-    SQLALCHEMY_DATABASE_URI = (
-        os.environ.get("DATABASE_URL")
-        or (_mysql_url if _has_mysql_config else _sqlite_url)
-    )
+    
+    if os.environ.get("VERCEL"):
+        # On Vercel, always use SQLite unless a remote DATABASE_URL is explicitly provided
+        SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or _sqlite_url
+    else:
+        SQLALCHEMY_DATABASE_URI = (
+            os.environ.get("DATABASE_URL")
+            or (_mysql_url if _has_mysql_config else _sqlite_url)
+        )
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
