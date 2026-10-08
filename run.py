@@ -119,6 +119,12 @@ def seed_demo_data() -> None:
         print("[SEED] Demo data inserted successfully.")
 
 
+if os.environ.get("VERCEL"):
+    try:
+        seed_demo_data()
+    except Exception as e:
+        print(f"Error seeding demo data on Vercel: {e}")
+
 if __name__ == "__main__":
     if "--seed" in sys.argv:
         seed_demo_data()
